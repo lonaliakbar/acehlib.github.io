@@ -1,1 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencarian Buku</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; }
+        input { padding: 10px; width: 300px; }
+        button { padding: 10px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .pagination { margin-top: 20px; display: none; }
+        .pagination button { margin: 2px; padding: 5px 10px; }
+        #loading { display: none; font-size: 18px; font-weight: bold; margin-top: 10px; }
+        #prevBtn, #nextBtn { display: none; }
+    </style>
+</head>
+<body>
 
+    <h2>Pencarian Buku</h2>
+    <input type="text" id="keyword" placeholder="Masukkan judul buku">
+    <button onclick="cari()">Cari</button>
+
+    <p id="loading">Loading...</p>
+    <p id="result-count"></p>
+
+    <table id="result-table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Judul</th>
+                <th>URL</th>
+                <th>Bahasa</th>
+                <th>Jenis</th>
+            </tr>
+        </thead>
+        <tbody id="result-body"></tbody>
+    </table>
+
+    <div class="pagination">
+        <button id="prevBtn" onclick="prevPage()">❮ Prev</button>
+        <span id="page-info"></span>
+        <button id="nextBtn" onclick="nextPage()">Next ❯</button>
+    </div>
+
+    <script>
+        const apiUrl = "https://script.google.com/macros/s/AKfycbx51gstRuEnwV80vuorzxJHnCSqd1NN3C5yNyvXZcIxsAM2VV0M8gXcXWay2PzjuQJ7/exec";
+        let data = [];
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        function cari() {
+            const keyword = document.getElementById("keyword").value.trim();
+            if (!keyword) {
+                alert("Masukkan kata kunci!");
+                return;
+            }
+
+            document.getElementById("loading").style.display = "block"; // Tampilkan loading
+            document.getElementById("result-count").textContent = "";
+            document.getElementById("result-body").innerHTML = "";
+            document.getElementById("page-info").textContent = "";
+            document.getElementById("prevBtn").style.display = "none"; // Sembunyikan navigasi
+            document.getElementById("nextBtn").style.display = "none";
+            document.getElementById("result-table").style.display = "none"; // Sembunyikan tabel sebelum pencarian
+            document.querySelector(".pagination").style.display = "none"; // Sembunyikan pagination
+
+            fetch(`${apiUrl}?keyword=${encodeURIComponent(keyword)}`)
+                .then(response => response.json())
+                .then(result => {
+                    data = result;
+                    currentPage = 1;
+                    tampilkanHasil();
+                })
+                .catch(error => console.error("Error:", error))
+                .finally(() => {
+                    document.getElementById("loading").style.display = "none"; // Sembunyikan loading setelah selesai
+                });
+        }
+
+        function tampilkanHasil() {
+            const resultBody = document.getElementById("result-body");
+            const resultCount = document.getElementById("result-count");
+            const pageInfo = document.getElementById("page-info");
+            const prevBtn = document.getElementById("prevBtn");
+            const nextBtn = document.getElementById("nextBtn");
+            const resultTable = document.getElementById("result-table");
+            const pagination = document.querySelector(".pagination");
+
+            resultBody.innerHTML = "";
+            if (data.length === 0) {
+                resultCount.textContent = "Tidak ada hasil ditemukan.";
+                pageInfo.textContent = "";
+                resultTable.style.display = "none";
+                pagination.style.display = "none";
+                return;
+            }
+
+            resultCount.textContent = `Ditemukan ${data.length} hasil`;
+            resultTable.style.display = "table"; // Tampilkan tabel jika ada hasil
+            pagination.style.display = "block"; // Tampilkan pagination jika ada hasil
+
+            let start = (currentPage - 1) * itemsPerPage;
+            let end = start + itemsPerPage;
+            let paginatedItems = data.slice(start, end);
+
+            paginatedItems.forEach((item, index) => {
+                let row = `<tr>
+                    <td>${start + index + 1}</td>
+                    <td>${item.judul}</td>
+                    <td><a href="${item.url}" target="_blank">${item.url}</a></td>
+                    <td>${item.bahasa}</td>
+                    <td>${item.jenis}</td>
+                </tr>`;
+                resultBody.innerHTML += row;
+            });
+
+            pageInfo.textContent = `Halaman ${currentPage} dari ${Math.ceil(data.length / itemsPerPage)}`;
+
+            // Tampilkan tombol prev & next hanya jika diperlukan
+            prevBtn.style.display = currentPage > 1 ? "inline-block" : "none";
+            nextBtn.style.display = currentPage * itemsPerPage < data.length ? "inline-block" : "none";
+        }
+
+        function nextPage() {
+            if (currentPage * itemsPerPage < data.length) {
+                currentPage++;
+                tampilkanHasil();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                tampilkanHasil();
+            }
+        }
+    </script>
+
+</body>
+</html>
