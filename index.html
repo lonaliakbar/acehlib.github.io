@@ -17,6 +17,7 @@
         .pagination { margin-top: 20px; }
         .pagination button { padding: 8px 12px; font-size: 14px; cursor: pointer; margin: 0 5px; }
         .no-results { color: red; font-size: 18px; font-weight: bold; margin-top: 20px; }
+        .thumbnail { width: 70px; height: 100px; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -33,6 +34,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th>Thumbnail</th> <!-- Kolom baru untuk Thumbnail -->
                         <th>Judul</th>
                         <th>URL</th>
                         <th>Bahasa</th>
@@ -100,9 +102,9 @@
             document.getElementById("resultBody").innerHTML = paginatedData.map((item, index) => `
                 <tr>
                     <td>${start + index + 1}</td>
+                    <td><img src="https://placehold.co/70x100" class="thumbnail" alt="Thumbnail"></td> <!-- Thumbnail menggunakan URL yang baru -->
                     <td>${item.judul}</td>
-                   <!-- <td><a href="page.html?nomor=${start + index + 1}" target="_blank">Lihat Detail</a></td> -->
-                        <td><a href="page.html?nomor=${item.row}" target="_blank">Lihat Detail</a></td>
+                    <td><a href="page.html?nomor=${item.row}" target="_blank">Lihat Detail</a></td>
                     <td>${item.bahasa}</td>
                     <td>${item.jenis}</td>
                 </tr>
