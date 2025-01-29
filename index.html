@@ -121,7 +121,8 @@
             document.getElementById("resultBody").innerHTML = paginatedData.map((item, index) => `
                 <tr>
                     <td>${start + index + 1}</td>
-                    <td><img src="https://placehold.co/70x100" class="thumbnail" alt="Thumbnail"></td>
+                    <!--<td><img src="https://placehold.co/70x100" class="thumbnail" alt="Thumbnail"></td>-->
+                    <td><img src="${item.thumnail}" class="thumbnail" alt="Thumbnail"></td>
                     <td>${item.judul}</td>
                     <td><a href="page.html?nomor=${item.row}" target="_blank">Lihat Detail</a></td>
                     <td>${item.bahasa}</td>
@@ -140,7 +141,7 @@
     </script>
 
     <script>
-        const apiUrl = "https://script.google.com/macros/s/AKfycbxKWFl1Xy2nZHQAXerg3Li4WHw3PiK6Nv0KDfP8DpsMGcv2KyaGzWX38RkoX0LNsZH6/exec";
+        const apiUrl = "https://script.google.com/macros/s/AKfycby7wy5EwDlmGNyuCfCfUzj5IpUMBzT60uPE-YE-uHzPu4WluwQEHwEF3cc-txERD1EL/exec";
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
