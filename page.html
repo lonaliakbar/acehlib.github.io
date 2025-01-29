@@ -1,76 +1,39 @@
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Informasi</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        .info-box { border: 1px solid #ddd; padding: 15px; margin-top: 20px; display: none; }
-        .error { color: red; font-weight: bold; }
-        #loading { display: none; font-size: 18px; font-weight: bold; }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h2>Detail Informasi</h2>
-        <p id="loading">Loading...</p>
-        <p id="error-message" class="error"></p>
-        <div id="info-box" class="info-box">
-            <p><strong>Judul:</strong> <span id="judul"></span></p>
-            <p><strong>URL:</strong> <a id="url" href="#" target="_blank"></a></p>
-            <p><strong>Bahasa:</strong> <span id="bahasa"></span></p>
-            <p><strong>Jenis:</strong> <span id="jenis"></span></p>
-        </div>
-    </div>
-
-    <script>
-        // const apiUrl = "https://script.google.com/macros/s/AKfycbx7KrVjC2Uf4yMe3VBiUiDtZXTxfGhhPXIRuqexWHfCuQSqwbZYeTDsCbvIoj69rwKK/exec";
-
-        function getQueryParam(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        function loadInfo() {
-            const urlParams = new URLSearchParams(window.location.search);
-   const nomor = urlParams.get('nomor') || 1; // Default ke 1 jika tidak ada
+<script>
+    function loadInfo() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const nomor = urlParams.get('nomor') || 1; // Default ke 1 jika tidak ada
           
-            if (!nomor) {
-                document.getElementById("error-message").textContent = "❌ Parameter 'nomor' tidak ditemukan di URL.";
-                return;
-            }
-
-            document.getElementById("loading").style.display = "block";
-
-            fetch(`${apiUrl}?type=1&nomor=${nomor}`)
-                .then(response => response.json())
-                .then(result => {
-                    document.getElementById("loading").style.display = "none";
-                    if (result.error) {
-                        document.getElementById("error-message").textContent = "❌ " + result.error;
-                    } else {
-                        document.getElementById("judul").textContent = result.judul;
-                        document.getElementById("url").textContent = result.url;
-                        document.getElementById("url").href = result.url;
-                        document.getElementById("bahasa").textContent = result.bahasa;
-                        document.getElementById("jenis").textContent = result.jenis;
-                        document.getElementById("info-box").style.display = "block";
-                    }
-                })
-                .catch(error => {
-                    document.getElementById("loading").style.display = "none";
-                    document.getElementById("error-message").textContent = "❌ Terjadi kesalahan saat mengambil data.";
-                    console.error("Error:", error);
-                });
+        if (!nomor) {
+            document.getElementById("error-message").textContent = "❌ Parameter 'nomor' tidak ditemukan di URL.";
+            return;
         }
 
-        window.onload = loadInfo;
-    </script>
+        document.getElementById("loading").style.display = "block";
 
-</body>
-    <script>const apiUrl = "https://script.google.com/macros/s/AKfycbxKWFl1Xy2nZHQAXerg3Li4WHw3PiK6Nv0KDfP8DpsMGcv2KyaGzWX38RkoX0LNsZH6/exec";</script>
-</html>
+        fetch(`${apiUrl}?type=1&nomor=${nomor}`)
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById("loading").style.display = "none";
+                if (result.error) {
+                    document.getElementById("error-message").textContent = "❌ " + result.error;
+                } else {
+                    document.getElementById("judul").textContent = result.judul;
+                    document.getElementById("url").textContent = result.url;
+                    document.getElementById("url").href = result.url;
+                    document.getElementById("bahasa").textContent = result.bahasa;
+                    document.getElementById("jenis").textContent = result.jenis;
+                    document.getElementById("info-box").style.display = "block";
+                    
+                    // Mengubah title halaman menjadi judul buku
+                    document.title = result.judul;
+                }
+            })
+            .catch(error => {
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("error-message").textContent = "❌ Terjadi kesalahan saat mengambil data.";
+                console.error("Error:", error);
+            });
+    }
+
+    window.onload = loadInfo;
+</script>
